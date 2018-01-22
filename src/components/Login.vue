@@ -3,7 +3,7 @@
     <form action="">
         <div class="form-group">
             <label for="account_number">Account Number</label>
-            <input type="text" name="account_number" id="account_number" class="form-control" value="" required="required" placeholder="Account Number" v-model="username">
+            <input type="text" name="account_number" id="account_number" class="form-control" value="" required="required" placeholder="Account Number" v-model="accountNumber">
         </div>
 
         <div class="form-group">
@@ -23,7 +23,7 @@ export default {
   name: 'Login',
   data () {
     return {
-      'username': null,
+      'accountNumber': null,
       'password': null
     }
   },
@@ -33,7 +33,7 @@ export default {
       const msg = {
         'messageType': 'login',
         'params': {
-          'username': this.username,
+          'account_number': this.accountNumber,
           'password': this.password
         }
       }
