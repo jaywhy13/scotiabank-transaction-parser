@@ -1,7 +1,10 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+  <div class="container">
+    <div class="row">
+      <div id="app">
+        <router-view/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -36,7 +39,7 @@ div#app-header {
 }
 
 div#app {
-    margin-top: 45px;
+    margin-top: 24px;
     background-color: white;
     padding: 40px;
 }
