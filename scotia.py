@@ -72,7 +72,6 @@ class LoginPage(BasePage):
             "contentForm:pwdnMasked").send_keys(password)
         print("Logging In")
         self.driver.find_element_by_id("contentForm:signIn").click()
-        print(self.driver.current_url)
 
     def is_logged_in(self):
         """ Tells us if login was successful
@@ -85,3 +84,8 @@ class LoginPage(BasePage):
         span = self.driver.find_element_by_css_selector(
             LoginPage.LOGIN_ERROR_SELECTOR)
         return span.text
+
+    def get_security_question(self):
+        question = self.driver.find_element_by_css_selector(
+            ".RUIFW-col-12 span").text
+        return question
