@@ -1,5 +1,8 @@
 <template>
 <div class="row">
+    <div class="alert alert-danger" v-if="loginError" v-text="loginError">Had an isse
+    </div>
+
     <form action="">
         <div class="form-group">
             <label for="account_number">Account Number</label>
