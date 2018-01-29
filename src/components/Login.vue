@@ -35,8 +35,17 @@ export default {
       'loggingIn': false
     }
   },
+  mounted: function () {
+    this.accountNumber = window.localStorage.getItem('accountNumber')
+    setupSocket(this)
+    this.$on('socketMessage', function (data) {
+      this.socketMessage(data)
+    })
+  },
   methods: {
     login: function () {
+      this.loggingIn = true
+      this.loginError = null
       console.log('Logging in')
       const msg = {
         'messageType': 'login',
@@ -46,6 +55,14 @@ export default {
         }
       }
       sendMessage(msg)
+    },
+    socketMessage: function (data) {
+      var messageType = data.messageType
+      if (messageType === 'login-failed') {
+        this.loggingIn = false
+        console.log('Setting message to', data.params.message)
+        this.loginError = data.params.message
+      }
     }
   }
 }
