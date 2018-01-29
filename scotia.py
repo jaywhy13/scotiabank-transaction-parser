@@ -18,8 +18,14 @@ class ScotiaBankSite(object):
         self.login_page = LoginPage(self.driver)
 
     def login(self, account_number=None, password=None):
+        """ Logs in to the website. Raises an exception if login fails
+
+            :param str account_number - the account number
+            :param str password - the password for the account
+        """
         self.home_page.go_to_login_page()
-        self.login_page.login(account_number=account_number, password=password)
+        return self.login_page.login(
+            account_number=account_number, password=password)
 
 
 class BasePage(object):
