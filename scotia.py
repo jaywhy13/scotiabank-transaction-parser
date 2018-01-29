@@ -46,8 +46,26 @@ class HomePage(BasePage):
 
 
 class LoginPage(BasePage):
+    """ An ecanpsulation of the login page, allows us to do just that.. login
+    """
+
+    LOGIN_ERROR_SELECTOR = "span.alert-msg"
 
     def login(self, account_number=None, password=None):
+        """ Logs in to the website using an account number and password
+        """
+        self.try_to_login(
+            account_number=account_number, password=password)
+        if self.is_logged_in():
+            print("Logged in successfully")
+            return True
+        login_error = self.get_login_error()
+        self.driver.close()
+        raise Exception(login_error)
+
+    def try_to_login(self, account_number=None, password=None):
+        """ Attempt login
+        """
         self.driver.find_element_by_id(
             "contentForm:nscard").send_keys(account_number)
         self.driver.find_element_by_id(
@@ -56,3 +74,14 @@ class LoginPage(BasePage):
         self.driver.find_element_by_id("contentForm:signIn").click()
         print(self.driver.current_url)
 
+    def is_logged_in(self):
+        """ Tells us if login was successful
+        """
+        return "Security question" in self.driver.page_source
+
+    def get_login_error(self):
+        """ Returns the login error on the page
+        """
+        span = self.driver.find_element_by_css_selector(
+            LoginPage.LOGIN_ERROR_SELECTOR)
+        return span.text
