@@ -30,7 +30,9 @@ export default {
   data () {
     return {
       'accountNumber': null,
-      'password': null
+      'password': null,
+      'loginError': null,
+      'loggingIn': false
     }
   },
   methods: {
