@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import sendMessage from '../base'
+import { sendMessage, setupSocket } from '../base'
 
 export default {
   name: 'Login',
