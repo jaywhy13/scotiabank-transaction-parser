@@ -54,6 +54,7 @@ export default {
           'password': this.password
         }
       }
+      window.localStorage.setItem('accountNumber', this.accountNumber)
       sendMessage(msg)
     },
     socketMessage: function (data) {
