@@ -14,7 +14,10 @@
             <input type="password" name="" id="password" class="form-control" required="required" title="" placeholder="Password" v-model="password">
         </div>
 
-        <button type="button" class="btn btn-info" v-on:click="login">Login</button>
+        <button type="button" class="btn btn-info" v-on:click="login" v-bind:disabled="loggingIn">
+          <i class="fas fa-circle-notch fa-spin" v-if="loggingIn"></i>
+          Login
+        </button>
     </form>
 </div>
 </template>
