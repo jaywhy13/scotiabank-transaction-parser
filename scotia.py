@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import *
 
 HOMEPAGE = "http://www.scotiabank.com/jm/en/0,,27,00.html"
 
@@ -24,8 +25,18 @@ class ScotiaBankSite(object):
             :param str password - the password for the account
         """
         self.home_page.go_to_login_page()
-        return self.login_page.login(
+        result = self.login_page.login(
             account_number=account_number, password=password)
+        self.current_page = self.login_page
+        return result
+
+    def get_security_question(self):
+        """ Returns the security question on the page
+        """
+        return self.login_page.get_security_question()
+
+    def answer_security_question(self, answer):
+        return self.login_page.answer_security_question(answer)
 
 
 class BasePage(object):
@@ -50,6 +61,8 @@ class LoginPage(BasePage):
     """
 
     LOGIN_ERROR_SELECTOR = "span.alert-msg"
+    SECURITY_QUESTION_INPUT = "#contentForm .RUIFW-form-el"
+    ANSWER_SECURITY_QUESTION_BUTTON = "#contentForm .RUIFW-btn-primary"
 
     def login(self, account_number=None, password=None):
         """ Logs in to the website using an account number and password
@@ -89,3 +102,27 @@ class LoginPage(BasePage):
         question = self.driver.find_element_by_css_selector(
             ".RUIFW-col-12 span").text
         return question
+
+    def answer_security_question(self, answer):
+        print("Entering answer")
+        self.driver.find_element_by_css_selector(
+            LoginPage.SECURITY_QUESTION_INPUT).send_keys(answer)
+        print("Submitting answer")
+        self.driver.find_element_by_css_selector(
+            LoginPage.ANSWER_SECURITY_QUESTION_BUTTON).click()
+        print("Checking for errors")
+        error_message = self.get_security_question_error()
+        if error_message:
+            raise Exception(error_message)
+        return True
+
+    def get_security_question_error(self):
+        try:
+            error_icon = self.driver.find_element_by_css_selector(
+                ".alert-icon-error")
+            message = \
+                self.driver.find_element_by_css_selector(
+                    LoginPage.LOGIN_ERROR_SELECTOR).text
+            return message
+        except NoSuchElementException as e:
+            return ''
