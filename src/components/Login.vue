@@ -37,8 +37,7 @@ export default {
   },
   mounted: function () {
     this.accountNumber = window.localStorage.getItem('accountNumber')
-    setupSocket(this)
-    this.$on('socketMessage', function (data) {
+    setupSocket(this, (data) => {
       this.socketMessage(data)
     })
   },
