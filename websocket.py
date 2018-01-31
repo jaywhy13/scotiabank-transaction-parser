@@ -77,6 +77,10 @@ class ScotiaBankSocketHandler(websocket.WebSocketHandler):
                 }
             })
 
+    def send_message(self, obj):
+        """ Encodes a message as a JSON string then sends it
+        """
+        self.write_message(json.dumps(obj))
 
     def on_close(self):
         print("Socket closed")
