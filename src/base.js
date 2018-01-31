@@ -7,10 +7,12 @@ export default function sendMessage (data) {
   socket.send(JSON.stringify(data))
 }
 
-function setupSocket (vm) {
+function setupSocket (vm, callback) {
   socket.addEventListener('message', function (event) {
     console.log('Socket receive: ', event.data)
-    vm.$emit('socketMessage', JSON.parse(event.data))
+    let obj = JSON.parse(event.data)
+    vm.$emit('socketMessage', obj)
+    callback(obj)
   })
 }
 
