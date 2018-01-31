@@ -63,6 +63,8 @@ export default {
         this.loggingIn = false
         console.log('Setting message to', data.params.message)
         this.loginError = data.params.message
+      } else if (messageType === 'login-success') {
+        this.$router.push('/security-question')
       }
     }
   }
