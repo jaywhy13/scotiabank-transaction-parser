@@ -13,6 +13,8 @@ class ScotiaBankSocketHandler(websocket.WebSocketHandler):
 
     def open(self):
         print("We have a connection")
+        self.send_session_key()
+
 
     def on_message(self, message):
         """ This parses the message receives as JSON then calls a 
@@ -46,6 +48,22 @@ class ScotiaBankSocketHandler(websocket.WebSocketHandler):
                 }
             })
 
+    def handle_session_key(self, **params):
+        key = params.get("key")
+        if key in SITES:
+            self.scotiabank = SITES.get(key)
+        else:
+            SITES[key] = self.scotiabank
+
+    def handle_request_session_key(self):
+        key = str(uuid.uuid4())
+        self.send_message({
+            'messageType': 'session-key',
+            'params': {
+                'key': key
+            }
+        })
+
     def handle_request_security_question(self):
         """ Sends the security question over the wire to the customer
         """
@@ -76,6 +94,25 @@ class ScotiaBankSocketHandler(websocket.WebSocketHandler):
                     'message': error_message
                 }
             })
+
+    def handle_get_accounts(self):
+        """ Returns a list of accounts
+        """
+        accounts = self.scotiabank.get_accounts()
+        self.send_message({
+            'messageType': 'account-list',
+            'params': {
+                'accounts': accounts
+            }
+        })
+
+    def handle_get_current_page(self):
+        self.send_message({
+            'messageType': 'current-page',
+            'params': {
+                'page': self.scotiabank.current_page
+            }
+        })
 
     def send_message(self, obj):
         """ Encodes a message as a JSON string then sends it
