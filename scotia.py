@@ -59,17 +59,6 @@ class BasePage(object):
         self.driver = driver
 
 
-class HomePage(BasePage):
-
-    def go_to_login_page(self):
-        """ Carries us to the login page
-        """
-        self.driver.get(HOMEPAGE)
-        sign_in_btn = self.driver.find_element_by_id("sign-in-btn")
-        print("Clicking Sign In")
-        sign_in_btn.click()        
-
-
 class LoginPage(BasePage):
     """ An ecanpsulation of the login page, allows us to do just that.. login
     """
