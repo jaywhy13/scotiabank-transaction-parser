@@ -28,13 +28,20 @@ export default {
     }
   },
   mounted: function () {
+    window.localStorage.setItem('questions', [])
     setupSocket(this, (data) => {
       var messageType = data.messageType
       var params = data.params || {}
       this.loading = false
       if (messageType === 'security-question') {
         this.question = data.params['security-question']
+        let answer = this.getAnswer()
+        if (answer) {
+          this.answer = answer
+          this.answerQuestion()
+        }
       } else if (messageType === 'security-question-correct') {
+        this.saveAnswer()
         this.$router.push('/accounts')
       } else if (messageType === 'security-question-incorrect') {
         this.error = params.message
@@ -59,6 +66,23 @@ export default {
       sendMessage({
         'messageType': 'request-security-question'
       })
+    },
+    saveAnswer: function () {
+      let questions = window.localStorage.getItem('questions') || []
+      questions.push({
+        question: this.question,
+        answer: this.anwer
+      })
+      window.localStorage.setItem('questions', questions)
+    },
+    getAnswer: function () {
+      let questions = window.localStorage.getItem('questions') || []
+      for (let i = 0; i < questions.length; i++) {
+        let question = questions[i]
+        if (question['question'] === this.question) {
+          return question['answer']
+        }
+      }
     }
   }
 }
