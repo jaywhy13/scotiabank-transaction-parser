@@ -4,7 +4,13 @@ const socket = new WebSocket(WEBSOCKET_URL)
 
 export default function sendMessage (data) {
   console.log('Socket send: ', JSON.stringify(data))
-  socket.send(JSON.stringify(data))
+  if (socket.readyState === 0) {
+    socket.onopen = () => {
+      socket.send(JSON.stringify(data))
+    }
+  } else {
+    socket.send(JSON.stringify(data))
+  }
 }
 
 function setupSocket (vm, callback) {
