@@ -129,3 +129,23 @@ class LoginPage(BasePage):
             return message
         except NoSuchElementException as e:
             return ''
+
+
+class AccountsPage(BasePage):
+
+    def get_accounts(self):
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located(
+                (By.CSS_SELECTOR, "td.account-type")))
+        accounts = []
+        elements = self.driver.find_elements_by_css_selector(
+            "td.account-type")
+        for element in elements:
+            parent = element.find_element_by_xpath('..')
+            balance = parent.find_element_by_css_selector(
+                ".balance").text
+            accounts.append({
+                "name": element.text,
+                "balance": balance
+            })
+        return accounts
