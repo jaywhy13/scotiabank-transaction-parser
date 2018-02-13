@@ -45,8 +45,12 @@ class ScotiaBankSite(object):
         return self.login_page.get_security_question()
 
     def answer_security_question(self, answer):
-        return self.login_page.answer_security_question(answer)
+        result = self.login_page.answer_security_question(answer)
         self.current_page = ScotiaBankSite.PAGE_ACCOUNTS
+        return result
+
+    def get_accounts(self):
+        return self.accounts_page.get_accounts()
 
 
 class BasePage(object):
