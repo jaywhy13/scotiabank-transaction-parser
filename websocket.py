@@ -1,9 +1,11 @@
 import json
+import uuid
 
 from tornado import websocket
 
 from scotia import ScotiaBankSite
 
+SITES = {}
 
 class ScotiaBankSocketHandler(websocket.WebSocketHandler):
 
