@@ -70,6 +70,7 @@ class LoginPage(BasePage):
     def login(self, account_number=None, password=None):
         """ Logs in to the website using an account number and password
         """
+        self.driver.get(LOGIN_PAGE)
         self.try_to_login(
             account_number=account_number, password=password)
         if self.is_logged_in():
