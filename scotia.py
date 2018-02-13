@@ -7,6 +7,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 
 HOMEPAGE = "http://www.scotiabank.com/jm/en/0,,27,00.html"
+LOGIN_PAGE = \
+    "https://www1.online.scotiabank.com/onlineV1/leap/signon/signOn.xhtml?" \
+    "country=JAM&lang=en&channel=WEB"
 
 chrome_options = Options()
 
@@ -20,7 +23,6 @@ class ScotiaBankSite(object):
 
     def __init__(self):
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
-        self.home_page = HomePage(self.driver)
         self.login_page = LoginPage(self.driver)
         self.accounts_page = AccountsPage(self.driver)
         self.current_page = ScotiaBankSite.PAGE_LOGIN
@@ -32,7 +34,6 @@ class ScotiaBankSite(object):
             :param str account_number - the account number
             :param str password - the password for the account
         """
-        self.home_page.go_to_login_page()
         result = self.login_page.login(
             account_number=account_number, password=password)
         self.current_page = ScotiaBankSite.PAGE_SECURITY_QUESTION
