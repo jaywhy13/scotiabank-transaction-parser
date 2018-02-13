@@ -13,10 +13,18 @@ chrome_options = Options()
 
 class ScotiaBankSite(object):
 
+    PAGE_LOGIN = 'login'
+    PAGE_SECURITY_QUESTION = 'security-question'
+    PAGE_ACCOUNTS = 'accounts'
+    PAGE_ACCOUNT = 'account'
+
     def __init__(self):
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
         self.home_page = HomePage(self.driver)
         self.login_page = LoginPage(self.driver)
+        self.accounts_page = AccountsPage(self.driver)
+        self.current_page = ScotiaBankSite.PAGE_LOGIN
+
 
     def login(self, account_number=None, password=None):
         """ Logs in to the website. Raises an exception if login fails
@@ -27,7 +35,7 @@ class ScotiaBankSite(object):
         self.home_page.go_to_login_page()
         result = self.login_page.login(
             account_number=account_number, password=password)
-        self.current_page = self.login_page
+        self.current_page = ScotiaBankSite.PAGE_SECURITY_QUESTION
         return result
 
     def get_security_question(self):
@@ -37,6 +45,7 @@ class ScotiaBankSite(object):
 
     def answer_security_question(self, answer):
         return self.login_page.answer_security_question(answer)
+        self.current_page = ScotiaBankSite.PAGE_ACCOUNTS
 
 
 class BasePage(object):
