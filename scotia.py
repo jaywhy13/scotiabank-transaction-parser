@@ -25,6 +25,7 @@ class ScotiaBankSite(object):
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
         self.login_page = LoginPage(self.driver)
         self.accounts_page = AccountsPage(self.driver)
+        self.account_page = AccountPage(self.driver)
         self.current_page = ScotiaBankSite.PAGE_LOGIN
 
 
@@ -51,6 +52,13 @@ class ScotiaBankSite(object):
 
     def get_accounts(self):
         return self.accounts_page.get_accounts()
+
+    def get_transactions(self, branch_code=None, account_number=None):
+        self.accounts_page.go_to_account(
+            branch_code=branch_code,
+            account_number=account_number)
+        return self.account_page.get_transactions(
+            branch_code=branch_code, account_number=account_number)
 
 
 class BasePage(object):
