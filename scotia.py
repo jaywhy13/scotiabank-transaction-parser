@@ -134,19 +134,77 @@ class LoginPage(BasePage):
 
 class AccountsPage(BasePage):
 
+    ACCOUNT_NUMBER_REGEX = \
+        r'(?P<account_name>.*) \- (?P<branch_code>[0-9]+) ?(?P<account_number>[0-9]+)'
+
     def get_accounts(self):
+        """ Returns a list of the accounts on the page
+        """
         WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located(
                 (By.CSS_SELECTOR, "td.account-type")))
         accounts = []
-        elements = self.driver.find_elements_by_css_selector(
-            "td.account-type")
+        elements = self._get_account_elements()
         for element in elements:
-            parent = element.find_element_by_xpath('..')
-            balance = parent.find_element_by_css_selector(
-                ".balance").text
+            balance = self._get_account_balance(element)
+            name = self._get_account_name(element)
+            account_number = self._get_account_number(element)
+            branch_code = self._get_branch_code(element)
             accounts.append({
-                "name": element.text,
-                "balance": balance
+                "name": name,
+                "balance": balance,
+                "account_number": account_number,
+                "branch_code": branch_code,
             })
         return accounts
+
+    def _get_account_elements(self):
+        """ Returns the list of elements containing our accounts
+        """
+        return self.driver.find_elements_by_css_selector("td.account-type")
+
+    def _get_account_name(self, element):
+        text = element.text.strip().replace("\n", "")
+        match = \
+            re.match(AccountsPage.ACCOUNT_NUMBER_REGEX, text)
+        name = match.group('account_name')
+        return name
+
+    def _get_account_balance(self, element):
+        parent = element.find_element_by_xpath('..')
+        balance = parent.find_element_by_css_selector(
+            ".balance").text
+        return balance
+
+    def _get_branch_code(self, element):
+        text = element.text.strip().replace("\n", "")
+        match = \
+            re.match(AccountsPage.ACCOUNT_NUMBER_REGEX, text)
+        branch_code = match.group('branch_code')
+        return branch_code
+
+    def _get_account_number(self, element):
+        text = element.text.strip().replace("\n", "")
+        match = \
+            re.match(AccountsPage.ACCOUNT_NUMBER_REGEX, text)
+        account_number = match.group('account_number')
+        return account_number
+
+
+    def go_to_account(self, branch_code=None, account_number=None):
+        """ Goes to the account details page for the given account
+        """
+        print("Going to account page for: {} {}".format(
+            branch_code, account_number))
+        for element in self._get_account_elements():
+            if self._get_branch_code(element) == branch_code and \
+                    self._get_account_number(element) == account_number:
+                a = element.find_element_by_tag_name("a")
+                print("Clicking on {}".format(a.text))
+                a.click()
+                self.current_page = ScotiaBankSite.PAGE_ACCOUNT
+                return
+        raise Exception(
+            "Could not find account page for {} {}".format(
+                branch_code, account_number))
+
