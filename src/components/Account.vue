@@ -21,3 +21,45 @@
     </div>
 </template>
 <script>
+import { sendMessage, setupSocket } from '../base'
+
+export default {
+  name: 'Account',
+  data () {
+    return {
+      loading: true,
+      name: '...',
+      accountNumber: this.$route.params.accountNumber,
+      branchCode: this.$route.params.branchCode,
+      transactions: []
+    }
+  },
+  mounted: function () {
+    setupSocket(this, (data) => {
+      var messageType = data.messageType
+      var params = data.params || {}
+      this.loading = false
+      if (messageType === 'transactions') {
+        this.transactions = params.transactions
+      }
+    })
+    // Request accounts
+    this.requestAccountTransactions()
+  },
+  methods: {
+    requestAccountTransactions: function () {
+      this.loading = true
+      sendMessage({
+        'messageType': 'get-transactions',
+        'params': {
+          'account_number': this.accountNumber,
+          'branch_code': this.branchCode
+        }
+      })
+    }
+  }
+}
+</script>
+<style scoped>
+
+</style>
