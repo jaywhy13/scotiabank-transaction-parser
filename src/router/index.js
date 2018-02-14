@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import SecurityQuestion from '@/components/SecurityQuestion'
 import Accounts from '@/components/Accounts'
+import Account from '@/components/Account'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
       path: '/accounts',
       name: 'Accounts',
       component: Accounts
+    },
+    {
+      path: '/account/:branchCode/:accountNumber',
+      name: 'Account',
+      component: Account
     }
   ]
 })
