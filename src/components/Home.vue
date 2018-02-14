@@ -41,7 +41,7 @@ export default {
           this.$router.push('/accounts')
         }
       } else if (messageType === 'session-key') {
-        self.saveSessionKey(params.key)
+        this.saveSessionKey(params.key)
       }
     },
     getLocalSessionKey: function () {
