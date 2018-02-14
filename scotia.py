@@ -208,3 +208,45 @@ class AccountsPage(BasePage):
             "Could not find account page for {} {}".format(
                 branch_code, account_number))
 
+
+class AccountPage(BasePage):
+
+    DATE_LIST_SELECTOR_ID = "transDetailsForm:date_list"
+    TRANSACTIONS_TABLE_ID = "transDetailsForm:current"
+
+    def get_transactions(self, branch_code=None, account_number=None):
+        """ Returns the list of transactions on the page
+        """
+        self.select_this_month_transactions()
+        transactions = self._get_transasctions_from_table()
+        return transactions
+
+    def select_this_month_transactions(self):
+        """ This selects this months' transactions from the drop down on
+            the account details page
+        """
+        element = self.driver.find_element_by_id(
+            AccountPage.DATE_LIST_SELECTOR_ID)
+        options = element.find_elements_by_tag_name("option")
+        for option in options:
+            if option.text.strip() == "This Month":
+                option.click()
+
+    def _get_transasctions_from_table(self):
+        transactions = []
+        table = self.driver.find_element_by_id(
+            AccountPage.TRANSACTIONS_TABLE_ID)
+        trs = table.find_elements_by_tag_name("tr")
+        for tr in trs:
+            tds = tr.find_elements_by_tag_name("td")
+            print("Found {} tds in {}".format(len(tds), tr.text))
+            if len(tds) >= 3:
+                date = tds[0].text.strip()
+                description = tds[1].text.strip()
+                amount = tds[3].text.strip()
+                transactions.append({
+                    "date": date,
+                    "description": description,
+                    "amount": amount
+                })
+        return transactions
