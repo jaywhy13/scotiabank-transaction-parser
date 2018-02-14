@@ -130,8 +130,6 @@ class LoginPage(BasePage):
 
     def get_security_question_error(self):
         try:
-            error_icon = self.driver.find_element_by_css_selector(
-                ".alert-icon-error")
             message = \
                 self.driver.find_element_by_css_selector(
                     LoginPage.LOGIN_ERROR_SELECTOR).text
